@@ -7,30 +7,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do Código
         uses: actions/checkout@v4
+
+      - name: Configurar Java 17 (JDK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Configurar Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Configurar Java 17 (JDK)
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Configurar Android SDK Nativo
+      - name: Aceitar Licenças do Android SDK
         run: |
-          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
-          echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Instalar Dependências
-        run: npm install --legacy-peer-deps
+        run: npm install
 
       - name: Compilar Frontend Web
         run: npm run build
@@ -44,7 +43,7 @@ jobs:
       - name: Compilar APK Android
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --stacktrace --no-daemon
 
       - name: Enviar APK para Download (Artefato)
         uses: actions/upload-artifact@v4
