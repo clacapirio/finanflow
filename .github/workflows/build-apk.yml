@@ -1,0 +1,52 @@
+name: Build Android APK (Nuvem)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Configurar Java 17 (JDK)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Instalar Dependências
+        run: npm ci || npm install
+
+      - name: Compilar Frontend Web
+        run: npm run build
+
+      - name: Sincronizar com Capacitor Android
+        run: npx cap sync android
+
+      - name: Conceder Permissões de Execução ao Gradle
+        run: chmod +x android/gradlew
+
+      - name: Compilar APK Android
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Enviar APK para Download (Artefato)
+        uses: actions/upload-artifact@v4
+        with:
+          name: FinanFlow-App-Android
+          path: android/app/build/outputs/apk/debug/app-debug.apk
