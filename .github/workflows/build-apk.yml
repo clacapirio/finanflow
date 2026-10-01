@@ -33,11 +33,11 @@ jobs:
       - name: Compilar Frontend Web
         run: npm run build
 
+      - name: Copiar Assets para Projeto Android
+        run: npx @capacitor/cli copy android
+
       - name: Conceder Permissões ao Gradle Wrapper
         run: chmod +x android/gradlew
-
-      - name: Sincronizar Assets do Capacitor
-        run: npx --yes @capacitor/cli sync android
 
       - name: Compilar APK Android
         run: |
