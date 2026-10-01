@@ -34,7 +34,7 @@ jobs:
         run: npm run build
 
       - name: Sincronizar Capacitor Android
-        run: npx cap sync android
+        run: npx -y @capacitor/cli sync android
 
       - name: Conceder Permissões ao Gradle Wrapper
         run: chmod +x android/gradlew
