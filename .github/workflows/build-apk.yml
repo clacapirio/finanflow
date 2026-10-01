@@ -24,12 +24,13 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Aceitar Licenças do Android SDK
+      - name: Configurar Variáveis do Android SDK
         run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
 
       - name: Instalar Dependências
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Compilar Frontend Web
         run: npm run build
@@ -43,7 +44,7 @@ jobs:
       - name: Compilar APK Android
         run: |
           cd android
-          ./gradlew assembleDebug --stacktrace --no-daemon
+          ./gradlew assembleDebug --no-daemon
 
       - name: Enviar APK para Download (Artefato)
         uses: actions/upload-artifact@v4
