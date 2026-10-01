@@ -2,22 +2,18 @@
 
 android {
   compileOptions {
-      sourceCompatibility JavaVersion.VERSION_17
-      targetCompatibility JavaVersion.VERSION_17
+      sourceCompatibility JavaVersion.VERSION_21
+      targetCompatibility JavaVersion.VERSION_21
   }
 }
 
-try {
-    apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
-} catch (Exception e) {
-    logger.info("cordova.variables.gradle not found, skipping")
-}
-
+apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
 
+
 }
+
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()
 }
-

@@ -33,8 +33,10 @@ jobs:
       - name: Compilar Frontend Web
         run: npm run build
 
-      - name: Sincronizar Capacitor Android
-        run: npx -y @capacitor/cli sync android
+      - name: Copiar Assets Web para o App Android
+        run: |
+          mkdir -p android/app/src/main/assets/public
+          cp -r dist/* android/app/src/main/assets/public/
 
       - name: Conceder Permissões ao Gradle Wrapper
         run: chmod +x android/gradlew
