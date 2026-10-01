@@ -33,16 +33,16 @@ jobs:
       - name: Compilar Frontend Web
         run: npm run build
 
+      - name: Conceder Permissões ao Gradle Wrapper
+        run: chmod +x android/gradlew
+
       - name: Sincronizar Assets do Capacitor
         run: npx --yes @capacitor/cli sync android
-
-      - name: Permissão do Gradle
-        run: chmod +x android/gradlew
 
       - name: Compilar APK Android
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          ./gradlew assembleDebug --no-daemon
 
       - name: Enviar APK para Download (Artefato)
         uses: actions/upload-artifact@v4
