@@ -54,14 +54,15 @@ jobs:
           tail -n 150 gradle_build.log 2>/dev/null || echo "Log não encontrado" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
-      - name: Listar APKs Encontrados
+      - name: Preparar APK para Download
         run: |
-          echo "=== BUSCANDO ARQUIVOS APK ==="
-          find . -name "*.apk"
+          find android/app/build -name "*.apk" -exec cp {} ./FinanFlow-App-Android.apk \;
+          echo "### Arquivo APK Gerado:" >> $GITHUB_STEP_SUMMARY
+          ls -la ./FinanFlow-App-Android.apk >> $GITHUB_STEP_SUMMARY || echo "Erro ao copiar APK" >> $GITHUB_STEP_SUMMARY
 
       - name: Enviar APK para Download (Artefato)
         uses: actions/upload-artifact@v4
         with:
           name: FinanFlow-App-Android
-          path: "**/*.apk"
+          path: FinanFlow-App-Android.apk
           if-no-files-found: error
