@@ -56,13 +56,14 @@ jobs:
 
       - name: Preparar APK para Download
         run: |
-          find android/app/build -name "*.apk" -exec cp {} ./FinanFlow-App-Android.apk \;
+          mkdir -p apk_output
+          find android/app/build -name "*.apk" -exec cp {} apk_output/FinanFlow-App-Android.apk \;
           echo "### Arquivo APK Gerado:" >> $GITHUB_STEP_SUMMARY
-          ls -la ./FinanFlow-App-Android.apk >> $GITHUB_STEP_SUMMARY || echo "Erro ao copiar APK" >> $GITHUB_STEP_SUMMARY
+          ls -la apk_output/FinanFlow-App-Android.apk >> $GITHUB_STEP_SUMMARY || echo "Erro ao copiar APK" >> $GITHUB_STEP_SUMMARY
 
       - name: Enviar APK para Download (Artefato)
         uses: actions/upload-artifact@v4
         with:
           name: FinanFlow-App-Android
-          path: FinanFlow-App-Android.apk
-          if-no-files-found: error
+          path: apk_output/FinanFlow-App-Android.apk
+          if-no-files-found: warn
