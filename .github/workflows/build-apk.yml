@@ -50,6 +50,8 @@ jobs:
           ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/glog.txt
           EXIT_CODE=${PIPESTATUS[0]}
           if [ $EXIT_CODE -ne 0 ]; then
+            echo "=== ❌ GRADLE BUILD FAILURE LOG ==="
+            cat /tmp/glog.txt
             echo "### ❌ Erro de Compilação no Gradle (Exit Code $EXIT_CODE):" >> $GITHUB_STEP_SUMMARY
             echo '```text' >> $GITHUB_STEP_SUMMARY
             tail -n 120 /tmp/glog.txt >> $GITHUB_STEP_SUMMARY
