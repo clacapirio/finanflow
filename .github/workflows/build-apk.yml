@@ -70,3 +70,11 @@ jobs:
           name: FinanFlow-App-Android
           path: apk_output/FinanFlow-App-Android.apk
           if-no-files-found: warn
+
+      - name: Enviar Log de Compilação (Se Falhar)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-build-log
+          path: /tmp/glog.txt
+          if-no-files-found: ignore
