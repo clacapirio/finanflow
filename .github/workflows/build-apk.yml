@@ -52,6 +52,8 @@ jobs:
       - name: Reportar Log de Compilação no Summary
         if: always()
         run: |
+          echo "=== CONSOLE LOG GRADLE ==="
+          cat gradle_build.log 2>/dev/null || echo "Log não encontrado"
           echo "### Log de Erro Gradle:" >> $GITHUB_STEP_SUMMARY
           echo '```text' >> $GITHUB_STEP_SUMMARY
           grep -A 30 "What went wrong:" gradle_build.log 2>/dev/null || true >> $GITHUB_STEP_SUMMARY
