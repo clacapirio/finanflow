@@ -47,19 +47,15 @@ jobs:
       - name: Compilar APK Android
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace
-
-      - name: Reportar Log de Compilação no Summary
-        if: always()
-        run: |
-          echo "=== CONSOLE LOG GRADLE ==="
-          cat gradle_build.log 2>/dev/null || echo "Log não encontrado"
-          echo "### Log de Erro Gradle:" >> $GITHUB_STEP_SUMMARY
-          echo '```text' >> $GITHUB_STEP_SUMMARY
-          grep -A 30 "What went wrong:" gradle_build.log 2>/dev/null || true >> $GITHUB_STEP_SUMMARY
-          grep -A 30 "FAILURE:" gradle_build.log 2>/dev/null || true >> $GITHUB_STEP_SUMMARY
-          tail -n 60 gradle_build.log 2>/dev/null || echo "Log não encontrado" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/glog.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "### ❌ Erro de Compilação no Gradle (Exit Code $EXIT_CODE):" >> $GITHUB_STEP_SUMMARY
+            echo '```text' >> $GITHUB_STEP_SUMMARY
+            tail -n 120 /tmp/glog.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            exit $EXIT_CODE
+          fi
 
       - name: Preparar APK para Download
         run: |
