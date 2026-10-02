@@ -13,11 +13,11 @@ jobs:
       - name: Checkout do Código
         uses: actions/checkout@v4
 
-      - name: Configurar Java 21
+      - name: Configurar Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
 
       - name: Aceitar Licenças do Android SDK
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
@@ -51,34 +51,34 @@ jobs:
         run: |
           cd android
           set -o pipefail
-          ./gradlew assembleDebug --no-daemon --info 2>&1 | tee /tmp/glog.txt
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/glog.txt
 
-      - name: Reportar Log Completo no Summary
+      - name: Reportar Log no Summary
         if: always()
         run: |
           if [ -f /tmp/glog.txt ]; then
-            echo "### 📋 Log Completo da Compilação Gradle:" >> $GITHUB_STEP_SUMMARY
+            echo "### 📋 Log da Compilação Gradle:" >> $GITHUB_STEP_SUMMARY
             echo '```text' >> $GITHUB_STEP_SUMMARY
-            cat /tmp/glog.txt >> $GITHUB_STEP_SUMMARY
+            tail -n 150 /tmp/glog.txt >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Preparar APK para Download
         run: |
           mkdir -p apk_output
-          find android/app/build -name "*.apk" -exec cp {} apk_output/FinanFlow-App-Android.apk \;
-          echo "### Arquivo APK Gerado:" >> $GITHUB_STEP_SUMMARY
-          ls -la apk_output/FinanFlow-App-Android.apk >> $GITHUB_STEP_SUMMARY || echo "Erro ao copiar APK" >> $GITHUB_STEP_SUMMARY
+          cp android/app/build/outputs/apk/debug/app-debug.apk apk_output/FinanFlow-App-Android.apk || find android/app/build -name "*.apk" -exec cp {} apk_output/FinanFlow-App-Android.apk \;
+          echo "### Arquivo APK Gerado com Sucesso! 🚀" >> $GITHUB_STEP_SUMMARY
+          ls -la apk_output/FinanFlow-App-Android.apk >> $GITHUB_STEP_SUMMARY
 
       - name: Enviar APK para Download (Artefato)
         uses: actions/upload-artifact@v4
         with:
           name: FinanFlow-App-Android
           path: apk_output/FinanFlow-App-Android.apk
-          if-no-files-found: warn
+          if-no-files-found: error
 
       - name: Enviar Log de Compilação (Se Falhar)
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: gradle-build-log

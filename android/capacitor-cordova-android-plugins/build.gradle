@@ -28,8 +28,8 @@ android {
         abortOnError = false
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
@@ -54,6 +54,12 @@ dependencies {
 apply from: "cordova.variables.gradle"
 // PLUGIN GRADLE EXTENSIONS END
 
-for (def func : cdvPluginPostBuildExtras) {
-    func()
+try {
+    if (project.hasProperty('cdvPluginPostBuildExtras') && cdvPluginPostBuildExtras) {
+        for (def func : cdvPluginPostBuildExtras) {
+            func()
+        }
+    }
+} catch (Exception e) {
+    logger.info("cdvPluginPostBuildExtras skipped: " + e.message)
 }
