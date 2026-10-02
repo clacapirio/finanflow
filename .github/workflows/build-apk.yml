@@ -19,6 +19,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
@@ -49,9 +52,11 @@ jobs:
       - name: Reportar Log de Compilação no Summary
         if: always()
         run: |
-          echo "### Log Final da Compilação Gradle" >> $GITHUB_STEP_SUMMARY
+          echo "### Log de Erro Gradle:" >> $GITHUB_STEP_SUMMARY
           echo '```text' >> $GITHUB_STEP_SUMMARY
-          tail -n 150 gradle_build.log 2>/dev/null || echo "Log não encontrado" >> $GITHUB_STEP_SUMMARY
+          grep -A 30 "What went wrong:" gradle_build.log 2>/dev/null || true >> $GITHUB_STEP_SUMMARY
+          grep -A 30 "FAILURE:" gradle_build.log 2>/dev/null || true >> $GITHUB_STEP_SUMMARY
+          tail -n 60 gradle_build.log 2>/dev/null || echo "Log não encontrado" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Preparar APK para Download
