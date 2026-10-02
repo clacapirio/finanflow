@@ -43,9 +43,8 @@ jobs:
 
       - name: Compilar APK Android
         run: |
-          set -e -o pipefail
           cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee ../gradle_build.log
+          ./gradlew assembleDebug --no-daemon --stacktrace > ../gradle_build.log 2>&1 || (cat ../gradle_build.log && exit 1)
 
       - name: Reportar Log de Compilação no Summary
         if: always()
