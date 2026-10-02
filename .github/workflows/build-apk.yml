@@ -51,7 +51,7 @@ jobs:
         run: |
           cd android
           set -o pipefail
-          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/glog.txt
+          ./gradlew assembleDebug --no-daemon --info 2>&1 | tee /tmp/glog.txt
 
       - name: Reportar Log Completo no Summary
         if: always()
