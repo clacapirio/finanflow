@@ -54,7 +54,7 @@ jobs:
             cat /tmp/glog.txt
             echo "### ❌ Erro de Compilação no Gradle (Exit Code $EXIT_CODE):" >> $GITHUB_STEP_SUMMARY
             echo '```text' >> $GITHUB_STEP_SUMMARY
-            tail -n 120 /tmp/glog.txt >> $GITHUB_STEP_SUMMARY
+            cat /tmp/glog.txt >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit $EXIT_CODE
           fi
