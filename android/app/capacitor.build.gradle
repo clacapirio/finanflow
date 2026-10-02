@@ -7,13 +7,20 @@ android {
   }
 }
 
-apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
-dependencies {
+try {
+    apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
+} catch (Exception e) {
+    logger.info("cordova.variables.gradle not found, skipping")
+}
 
+dependencies {
 
 }
 
-
-if (hasProperty('postBuildExtras')) {
-  postBuildExtras()
+try {
+    if (hasProperty('postBuildExtras') && postBuildExtras instanceof Closure) {
+        postBuildExtras()
+    }
+} catch (Exception e) {
+    logger.info("postBuildExtras skipped: " + e.message)
 }
