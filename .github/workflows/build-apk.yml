@@ -19,7 +19,10 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Aceitar Licenças do Android SDK
+      - name: Configurar e Aceitar Licenças do Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Aceitar Licenças Adicionais
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Configurar Node.js
@@ -62,7 +65,7 @@ jobs:
         run: |
           echo "==================== INÍCIO DO LOG DE ERRO ===================="
           if [ -f /tmp/glog.txt ]; then
-            grep -C 10 -i -E "error|failed|exception|could not find" /tmp/glog.txt || tail -n 200 /tmp/glog.txt
+            cat /tmp/glog.txt
           fi
           echo "==================== FIM DO LOG DE ERRO ===================="
 
