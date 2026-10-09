@@ -37,9 +37,14 @@ jobs:
       - name: Instalar Dependências
         run: npm ci || npm install --legacy-peer-deps
 
-      - name: Corrigir Versão do AGP nos Módulos do Capacitor
+      - name: Corrigir Versão do AGP e Dependências nos Módulos do Capacitor
         run: |
           find node_modules/@capacitor -name "build.gradle" -exec sed -i 's/gradle:8\.13\.0/gradle:8\.7\.3/g' {} + || true
+          find node_modules/@capacitor -name "build.gradle" -exec sed -i "s/'1\.11\.0'/'1\.9\.3'/g" {} + || true
+          find node_modules/@capacitor -name "build.gradle" -exec sed -i "s/'1\.17\.0'/'1\.13\.1'/g" {} + || true
+          find node_modules/@capacitor -name "build.gradle" -exec sed -i "s/'1\.8\.9'/'1\.8\.5'/g" {} + || true
+          find node_modules/@capacitor -name "build.gradle" -exec sed -i "s/'1\.14\.0'/'1\.12\.1'/g" {} + || true
+          find node_modules/@capacitor -name "build.gradle" -exec sed -i "s/'14\.0\.1'/'10\.1\.1'/g" {} + || true
 
       - name: Compilar Frontend Web
         run: npm run build
