@@ -19,11 +19,12 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Configurar e Aceitar Licenças do Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Aceitar Licenças Adicionais
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+      - name: Aceitar Licenças do Android SDK
+        run: |
+          mkdir -p "$ANDROID_HOME/licenses"
+          echo -e "24333f8a637b82447d97d4a00f279d99f9247196\nd56f5187479451eabf01fb78af6dfcb131a6481e\n84831b9409646a918e30573bab4c9c91346d8abd\n33b62242467056808608233306a4b13682977d2a" > "$ANDROID_HOME/licenses/android-sdk-license"
+          echo -e "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
