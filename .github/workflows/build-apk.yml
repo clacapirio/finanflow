@@ -33,6 +33,10 @@ jobs:
       - name: Instalar Dependências
         run: npm ci || npm install --legacy-peer-deps
 
+      - name: Corrigir Versão do AGP nos Módulos do Capacitor
+        run: |
+          find node_modules/@capacitor -name "build.gradle" -exec sed -i 's/gradle:8\.13\.0/gradle:8\.7\.3/g' {} + || true
+
       - name: Compilar Frontend Web
         run: npm run build
 
@@ -52,6 +56,15 @@ jobs:
           cd android
           set -o pipefail
           ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/glog.txt
+
+      - name: Exibir Log Detalhado em Caso de Falha
+        if: failure()
+        run: |
+          echo "==================== INÍCIO DO LOG DE ERRO ===================="
+          if [ -f /tmp/glog.txt ]; then
+            grep -C 10 -i -E "error|failed|exception|could not find" /tmp/glog.txt || tail -n 200 /tmp/glog.txt
+          fi
+          echo "==================== FIM DO LOG DE ERRO ===================="
 
       - name: Reportar Log no Summary
         if: always()
